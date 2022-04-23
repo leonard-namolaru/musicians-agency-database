@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR
 
 CREATE TABLE IF NOT EXISTS MUSICIEN
 (
-    personne_id INTEGER NOT NULL,
+    musicien_id INTEGER NOT NULL,
     personne_nom VARCHAR NOT NULL,
     personne_prenom VARCHAR NOT NULL,
     personne_date_naissance DATE NOT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS MUSICIEN
 
 CREATE TABLE IF NOT EXISTS PRODUCTEUR
 (
-    personne_id INTEGER NOT NULL,
+    producteur_id INTEGER NOT NULL,
     personne_nom VARCHAR NOT NULL,
     personne_prenom VARCHAR NOT NULL,
     personne_date_naissance DATE NOT NULL,
