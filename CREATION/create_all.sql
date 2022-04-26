@@ -12,15 +12,15 @@ DROP TABLE IF EXISTS MAITRISE;
 
 CREATE TABLE IF NOT EXISTS MUSICIEN (
     musicien_id INTEGER NOT NULL,
-    personne_nom VARCHAR NOT NULL,
-    personne_prenom VARCHAR NOT NULL,
-    personne_date_naissance DATE NOT NULL,
-    personne_telephone VARCHAR NOT NULL,
-    personne_adresse VARCHAR NOT NULL,
-    personne_mail VARCHAR NOT NULL,
+    musicien_nom VARCHAR NOT NULL,
+    musicien_prenom VARCHAR NOT NULL,
+    musicien_date_naissance DATE NOT NULL,
+    musicien_telephone VARCHAR NOT NULL,
+    musicien_adresse VARCHAR NOT NULL,
+    musicien_mail VARCHAR NOT NULL,
     
     PRIMARY KEY (musicien_id),
-    UNIQUE (personne_nom, personne_prenom, personne_date_naissance, personne_telephone, personne_adresse, personne_mail)
+    UNIQUE (musicien_nom, musicien_prenom, musicien_date_naissance, musicien_telephone, musicien_adresse, musicien_mail)
 );
 
 
@@ -39,15 +39,15 @@ CREATE TABLE IF NOT EXISTS AGENT (
 
 CREATE TABLE IF NOT EXISTS PRODUCTEUR (
     producteur_id INTEGER NOT NULL,
-    personne_nom VARCHAR NOT NULL,
-    personne_prenom VARCHAR NOT NULL,
-    personne_date_naissance DATE NOT NULL,
-    personne_telephone VARCHAR NOT NULL,
-    personne_adresse VARCHAR NOT NULL,
-    personne_mail VARCHAR NOT NULL,
+    producteur_nom VARCHAR NOT NULL,
+    producteur_prenom VARCHAR NOT NULL,
+    producteur_date_naissance DATE NOT NULL,
+    producteur_telephone VARCHAR NOT NULL,
+    producteur_adresse VARCHAR NOT NULL,
+    producteur_mail VARCHAR NOT NULL,
     
     PRIMARY KEY (producteur_id),
-    UNIQUE (personne_nom, personne_prenom, personne_date_naissance, personne_telephone, personne_adresse, personne_mail)
+    UNIQUE (producteur_nom, producteur_prenom, producteur_date_naissance, producteur_telephone, producteur_adresse, producteur_mail)
 );
 
 CREATE TABLE IF NOT EXISTS INSTRUMENT (
