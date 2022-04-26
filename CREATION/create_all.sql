@@ -2,17 +2,30 @@ DROP TABLE IF EXISTS AGENT;
 DROP TABLE IF EXISTS DEMANDE;
 DROP TABLE IF EXISTS INSTRUMENT;
 DROP TABLE IF EXISTS CONTRAT_AGENT_ARTISTE;
-DROP TABLE IF EXISTS PAIEMENT_ARTISTE
-DROP TABLE IF EXISTS ALBUMS
-DROP TABLE IF EXISTS STYLE_MUSIQUE
-DROP TABLE IF EXISTS CONTRAT_ARTISTE_PRODUCTEUR
-DROP TABLE IF EXISTS MUSICIEN
-DROP TABLE IF EXISTS PRODUCTEUR
-DROP TABLE IF EXISTS PRODUCTEUR
-DROP TABLE IF EXISTS MAITRISE
+DROP TABLE IF EXISTS PAIEMENT_ARTISTE;
+DROP TABLE IF EXISTS ALBUMS;
+DROP TABLE IF EXISTS STYLE_MUSIQUE;
+DROP TABLE IF EXISTS CONTRAT_ARTISTE_PRODUCTEUR;
+DROP TABLE IF EXISTS MUSICIEN;
+DROP TABLE IF EXISTS PRODUCTEUR;
+DROP TABLE IF EXISTS MAITRISE;
+
+CREATE TABLE IF NOT EXISTS MUSICIEN (
+    musicien_id INTEGER NOT NULL,
+    personne_nom VARCHAR NOT NULL,
+    personne_prenom VARCHAR NOT NULL,
+    personne_date_naissance DATE NOT NULL,
+    personne_telephone VARCHAR NOT NULL,
+    personne_adresse VARCHAR NOT NULL,
+    personne_mail VARCHAR NOT NULL,
+    
+    PRIMARY KEY (musicien_id),
+    UNIQUE (personne_nom, personne_prenom, personne_date_naissance, personne_telephone, personne_adresse, personne_mail)
+);
+
 
 CREATE TABLE IF NOT EXISTS AGENT (
-    agent_id INTEGER PRIMARY KEY NOT NULL,
+    agent_id INTEGER NOT NULL,
     agent_nom VARCHAR NOT NULL,
     agent_prenom VARCHAR NOT NULL,
     agent_telephone VARCHAR NOT NULL,
@@ -24,15 +37,17 @@ CREATE TABLE IF NOT EXISTS AGENT (
    
 );
 
-CREATE TABLE IF NOT EXISTS DEMANDE (
-    demande_id INTEGER NOT NULL,
-    demande_nom VARCHAR NOT NULL,
-    demande_date_debut DATE NOT NULL,
-    demande_date_fin DATE CHECK (demande_date_debut <= demande_date_fin) NOT NULL,
-    instrument_id integer REFERENCES INSTRUMENT,
-    style_musique_id integer REFERENCES STYLE_MUSIQUE,
+CREATE TABLE IF NOT EXISTS PRODUCTEUR (
+    producteur_id INTEGER NOT NULL,
+    personne_nom VARCHAR NOT NULL,
+    personne_prenom VARCHAR NOT NULL,
+    personne_date_naissance DATE NOT NULL,
+    personne_telephone VARCHAR NOT NULL,
+    personne_adresse VARCHAR NOT NULL,
+    personne_mail VARCHAR NOT NULL,
     
-    PRIMARY KEY (demande_id)
+    PRIMARY KEY (producteur_id),
+    UNIQUE (personne_nom, personne_prenom, personne_date_naissance, personne_telephone, personne_adresse, personne_mail)
 );
 
 CREATE TABLE IF NOT EXISTS INSTRUMENT (
@@ -41,37 +56,6 @@ CREATE TABLE IF NOT EXISTS INSTRUMENT (
     
     PRIMARY KEY (instrument_id)
 );
-
-CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
-    contrat_id INTEGER NOT NULL,
-    contrat_debut DATE NOT NULL,
-    contrat_fin DATE CHECK (contrat_debut < contrat_fin OR contrat_fin = NULL), -- Si la représentation actuelle est pour une durée indéterminée sans date de fin : contrat_fin = NULL
-    contrat_pourcentage_agence INTEGER NOT NULL,
-    musicien_id INTEGER REFERENCES MUSICIEN,
-    agent_id INTEGER REFERENCES AGENT,
-    
-    PRIMARY KEY (contrat_id)
-);
-
-CREATE TABLE IF NOT EXISTS PAIEMENT_ARTISTE (
-    paiements_id INTEGER NOT NULL,
-    contrat_id INTEGER REFERENCES CONTRAT_ARTISTE_PRODUCTEUR
-    paiements_date DATE NOT NULL,
-    paiement_montant_brut INTEGER CHECK (paiement_montant_brut > 0) NOT NULL,
-    paiement_honoraire_agence INTEGER CHECK (paiement_honoraire_agence > 0) NOT NULL,
-    
-    PRIMARY KEY (paiements_id,contrat_id)
-);
-
-CREATE TABLE IF NOT EXISTS ALBUMS (
-    album_id INTEGER NOT NULL,
-    album_nom VARCHAR NOT NULL,
-    album_date_debut DATE NOT NULL,
-    album_date_fin DATE CHECK (album_date_debut < album_date_debut) NOT NULL,
-    
-    PRIMARY KEY (album_id)
-);
-
 
 CREATE TABLE IF NOT EXISTS STYLE_MUSIQUE(
     style_id INTEGER NOT NULL,
@@ -92,31 +76,52 @@ CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
     PRIMARY KEY (contrat_id)
 );
 
-CREATE TABLE IF NOT EXISTS MUSICIEN (
-    musicien_id INTEGER NOT NULL,
-    personne_nom VARCHAR NOT NULL,
-    personne_prenom VARCHAR NOT NULL,
-    personne_date_naissance DATE NOT NULL,
-    personne_telephone VARCHAR NOT NULL,
-    personne_adresse VARCHAR NOT NULL,
-    personne_mail VARCHAR NOT NULL,
+
+
+CREATE TABLE IF NOT EXISTS DEMANDE (
+    demande_id INTEGER NOT NULL,
+    demande_nom VARCHAR NOT NULL,
+    demande_date_debut DATE NOT NULL,
+    demande_date_fin DATE CHECK (demande_date_debut <= demande_date_fin) NOT NULL,
+    instrument_id integer REFERENCES INSTRUMENT,
+    style_musique_id integer REFERENCES STYLE_MUSIQUE,
     
-    PRIMARY KEY (personne_id),
-    UNIQUE (personne_nom, personne_prenom, personne_date_naissance, personne_telephone, personne_adresse, personne_mail)
+    PRIMARY KEY (demande_id)
 );
 
-CREATE TABLE IF NOT EXISTS PRODUCTEUR (
-    producteur_id INTEGER NOT NULL,
-    personne_nom VARCHAR NOT NULL,
-    personne_prenom VARCHAR NOT NULL,
-    personne_date_naissance DATE NOT NULL,
-    personne_telephone VARCHAR NOT NULL,
-    personne_adresse VARCHAR NOT NULL,
-    personne_mail VARCHAR NOT NULL,
+
+
+CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
+    contrat_id INTEGER NOT NULL,
+    contrat_debut DATE NOT NULL,
+    contrat_fin DATE CHECK (contrat_debut < contrat_fin OR contrat_fin = NULL), -- Si la reprsentation actuelle est pour une dure indtermine sans date de fin : contrat_fin = NULL
+    contrat_pourcentage_agence INTEGER NOT NULL,
+    musicien_id INTEGER REFERENCES MUSICIEN,
+    agent_id INTEGER REFERENCES AGENT,
     
-    PRIMARY KEY (personne_id),
-    UNIQUE (personne_nom, personne_prenom, personne_date_naissance, personne_telephone, personne_adresse, personne_mail)
+    PRIMARY KEY (contrat_id)
 );
+
+CREATE TABLE IF NOT EXISTS PAIEMENT_ARTISTE (
+    paiements_id INTEGER NOT NULL,
+    contrat_id INTEGER REFERENCES CONTRAT_ARTISTE_PRODUCTEUR,
+    paiements_date DATE NOT NULL,
+    paiement_montant_brut INTEGER CHECK (paiement_montant_brut > 0) NOT NULL,
+    paiement_honoraire_agence INTEGER CHECK (paiement_honoraire_agence > 0) NOT NULL,
+    
+    PRIMARY KEY (paiements_id,contrat_id)
+);
+
+CREATE TABLE IF NOT EXISTS ALBUMS (
+    album_id INTEGER NOT NULL,
+    album_nom VARCHAR NOT NULL,
+    album_date_debut DATE NOT NULL,
+    album_date_fin DATE CHECK (album_date_debut < album_date_debut) NOT NULL,
+    
+    PRIMARY KEY (album_id)
+);
+
+
 
 CREATE TABLE IF NOT EXISTS JOUE (
     instrument_id INTEGER REFERENCES INSTRUMENT,
