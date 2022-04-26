@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS ALBUMS (
     album_id INTEGER NOT NULL,
     album_nom VARCHAR NOT NULL,
     album_date_debut DATE NOT NULL,
-    album_date_fin DATE CHECK (album_date_debut < album_date_debut) NOT NULL,
+    album_date_fin DATE CHECK (album_date_debut < album_date_fin) NOT NULL,
     
     PRIMARY KEY (album_id)
 );
@@ -124,16 +124,16 @@ CREATE TABLE IF NOT EXISTS ALBUMS (
 
 
 CREATE TABLE IF NOT EXISTS JOUE (
-    instrument_id INTEGER REFERENCES INSTRUMENT,
     musicien_id INTEGER REFERENCES MUSICIEN,
+    instrument_id INTEGER REFERENCES INSTRUMENT,
     
-    PRIMARY KEY (instrument_id,musicien_id)
+    PRIMARY KEY (musicien_id,instrument_id)
 );
 
 CREATE TABLE IF NOT EXISTS MAITRISE (
-    style_id INTEGER REFERENCES STYLE_MUSIQUE,
     musicien_id INTEGER REFERENCES MUSICIEN,
+    style_id INTEGER REFERENCES STYLE_MUSIQUE,
     
-    PRIMARY KEY (style_id,musicien_id)
+    PRIMARY KEY (musicien_id,style_id)
     
 );
