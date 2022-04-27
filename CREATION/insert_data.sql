@@ -1,6 +1,7 @@
--- Do not forget to change the path of the csv files when you have them on your proper drive 
--- Do not change the csv files name as they match the tables thus the below commands
--- Execute the commands the exact same order 
+------IMPORTANT NOTES :
+--> Do not forget to change the path of the csv files when you have them on your proper drive 
+--> Do not change the csv files name as they match the tables thus the below commands
+--> Execute the commands the exact same order 
 
 COPY musicien FROM '/Users/henchir/Desktop/Master 1 LP/Semestre 2/Bdd Avancé/Projet /script sql /sources csv/table musicien.csv' CSV HEADER; --1000 rows
 COPY agent FROM '/Users/henchir/Desktop/Master 1 LP/Semestre 2/Bdd Avancé/Projet /script sql /sources csv/table agent.csv' CSV HEADER; --1000 rows
