@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS PRODUCTEUR;
 DROP TABLE IF EXISTS MAITRISE;
 
 CREATE TABLE IF NOT EXISTS MUSICIEN (
-    musicien_id SERIAL , -- SERIAL = autoincrementing integer
+    musicien_id INTEGER NOT NULL,
     musicien_nom VARCHAR NOT NULL,
     musicien_prenom VARCHAR NOT NULL,
     musicien_date_naissance DATE NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS MUSICIEN (
 
 
 CREATE TABLE IF NOT EXISTS AGENT (
-    agent_id SERIAL , -- SERIAL = autoincrementing integer
+    agent_id INTEGER NOT NULL,
     agent_nom VARCHAR NOT NULL,
     agent_prenom VARCHAR NOT NULL,
     agent_telephone VARCHAR NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS AGENT (
 );
 
 CREATE TABLE IF NOT EXISTS PRODUCTEUR (
-    producteur_id SERIAL , -- SERIAL = autoincrementing integer
+    producteur_id INTEGER NOT NULL,
     producteur_nom VARCHAR NOT NULL,
     producteur_prenom VARCHAR NOT NULL,
     producteur_date_naissance DATE NOT NULL,
@@ -51,21 +51,21 @@ CREATE TABLE IF NOT EXISTS PRODUCTEUR (
 );
 
 CREATE TABLE IF NOT EXISTS INSTRUMENT (
-    instrument_id SERIAL , -- SERIAL = autoincrementing integer
+    instrument_id INTEGER NOT NULL,
     instrument_nom VARCHAR NOT NULL,
     
     PRIMARY KEY (instrument_id)
 );
 
 CREATE TABLE IF NOT EXISTS STYLE_MUSIQUE(
-    style_id SERIAL , -- SERIAL = autoincrementing integer
+    style_id INTEGER NOT NULL,
     style_nom VARCHAR NOT NULL,
     
     PRIMARY KEY (style_id)
 );
 
 CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
-    contrat_id SERIAL , -- SERIAL = autoincrementing integer
+    contrat_id INTEGER NOT NULL,
     contrat_date_debut DATE NOT NULL,
     contrat_date_fin DATE CHECK (contrat_date_debut < contrat_date_fin) NOT NULL,
     contrat_renumeration INTEGER CHECK (contrat_renumeration > 0) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
 
 
 CREATE TABLE IF NOT EXISTS DEMANDE (
-    demande_id SERIAL , -- SERIAL = autoincrementing integer
+    demande_id INTEGER NOT NULL,
     demande_nom VARCHAR NOT NULL,
     demande_date_debut DATE NOT NULL,
     demande_date_fin DATE CHECK (demande_date_debut <= demande_date_fin) NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS DEMANDE (
 
 
 CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
-    contrat_id SERIAL , -- SERIAL = autoincrementing integer
+    contrat_id INTEGER NOT NULL,
     contrat_debut DATE NOT NULL,
     contrat_fin DATE CHECK (contrat_debut < contrat_fin OR contrat_fin = NULL), -- Si la reprsentation actuelle est pour une dure indtermine sans date de fin : contrat_fin = NULL
     contrat_pourcentage_agence INTEGER NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS PAIEMENT_ARTISTE (
 );
 
 CREATE TABLE IF NOT EXISTS ALBUMS (
-    album_id SERIAL , -- SERIAL = autoincrementing integer
+    album_id INTEGER NOT NULL,
     album_nom VARCHAR NOT NULL,
     album_date_debut DATE NOT NULL,
     album_date_fin DATE CHECK (album_date_debut < album_date_fin) NOT NULL,
