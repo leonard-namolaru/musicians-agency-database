@@ -41,22 +41,28 @@ EXECUTE PROCEDURE verification_honoraire_agence();
 
 -- Les numéros de téléphone doivent comporter 10 chiffres ou "+" suivi de 11 chiffres
 
-CREATE OR REPLACE FUNCTION verification_musicien_telephone() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION verification_telephone() RETURNS trigger AS $$
 	DECLARE
+		-- les fonctions triggers ne peuvent pas avoir d'arguments déclarés
+        -- À la place, on peut accéder aux arguments du trigger par TG_NARGS et TG_ARGV.
+        -- TG_NARGS : le nombre d'arguments donnés à la fonction déclencheur dans l'instruction CREATE TRIGGER.
+		-- TG_ARGV[] : les arguments de l'instruction CREATE TRIGGER.
+		telephone VARCHAR := TG_ARGV[0];
+
 		telephone_apres_trim text;
 		premier_char text;
 		fin_str text;
 		str_len int;
 	BEGIN
 		-- trim([leading | trailing | both] [characters] from string)
-		telephone_apres_trim := trim(both from musicien_telephone);
+		telephone_apres_trim := trim(both from telephone);
 		
 		-- char_length(string)
 		str_len := telephone_apres_trim;
 		
 		-- substring(string [from int] [for int])	
 		premier_char := substring(telephone_apres_trim from 1 for 1);	
-		fin_str := substring(telephone_apres_trim from 2 for str_len);
+		fin_str      := substring(telephone_apres_trim from 2 for str_len);
 		
 		IF str_len = 10 AND (telephone_apres_trim ~ '^[0-9]+$')
 			THEN RETURN NEW;
@@ -72,4 +78,7 @@ CREATE TRIGGER verification_musicien_telephone
 BEFORE UPDATE ON musicien
 FOR EACH ROW
 WHEN (OLD.musicien_telephone != NEW.musicien_telephone)
-EXECUTE PROCEDURE verification_musicien_telephone();
+EXECUTE PROCEDURE verification_telephone(musicien_telephone);
+
+
+
