@@ -38,3 +38,38 @@ CREATE TRIGGER verification_honoraire_insert
 BEFORE INSERT ON paiement_artiste
 FOR EACH ROW -- Avant linsertion
 EXECUTE PROCEDURE verification_honoraire_agence();
+
+-- Les numéros de téléphone doivent comporter 10 chiffres ou "+" suivi de 11 chiffres
+
+CREATE OR REPLACE FUNCTION verification_musicien_telephone() RETURNS trigger AS $$
+	DECLARE
+		telephone_apres_trim text;
+		premier_char text;
+		fin_str text;
+		str_len int;
+	BEGIN
+		-- trim([leading | trailing | both] [characters] from string)
+		telephone_apres_trim := trim(both from musicien_telephone);
+		
+		-- char_length(string)
+		str_len := telephone_apres_trim;
+		
+		-- substring(string [from int] [for int])	
+		premier_char := substring(telephone_apres_trim from 1 for 1);	
+		fin_str := substring(telephone_apres_trim from 2 for str_len);
+		
+		IF str_len = 10 AND (telephone_apres_trim ~ '^[0-9]+$')
+			THEN RETURN NEW;
+		ELSIF str_len = 11 AND (fin_str ~ '^[0-9]+$') AND premier_char = '+'
+			THEN RETURN NEW;
+		END IF;
+		
+		RETURN NULL;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verification_musicien_telephone
+BEFORE UPDATE ON musicien
+FOR EACH ROW
+WHEN (OLD.musicien_telephone != NEW.musicien_telephone)
+EXECUTE PROCEDURE verification_musicien_telephone();
