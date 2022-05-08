@@ -35,12 +35,12 @@ WHEN ((OLD.paiement_montant_brut != NEW.paiement_montant_brut) OR (OLD.paiement_
 EXECUTE PROCEDURE verification_honoraire_agence();
 
 CREATE TRIGGER verification_honoraire_insert
-BEFORE INSERT ON paiement_artiste
-FOR EACH ROW -- Avant linsertion
+BEFORE INSERT ON paiement_artiste -- Avant linsertion
+FOR EACH ROW 
 EXECUTE PROCEDURE verification_honoraire_agence();
 
--- Les numéros de téléphone doivent comporter 10 chiffres ou "+" suivi de 11 chiffres
-
+--- Les tables musicien, agent, producteur
+-- Les numéros de téléphone doivent être au format suivant : 263-958-0726
 CREATE OR REPLACE FUNCTION verification_telephone() RETURNS trigger AS $$
 	DECLARE
 		-- les fonctions triggers ne peuvent pas avoir d'arguments déclarés
@@ -50,35 +50,59 @@ CREATE OR REPLACE FUNCTION verification_telephone() RETURNS trigger AS $$
 		telephone VARCHAR := TG_ARGV[0];
 
 		telephone_apres_trim text;
-		premier_char text;
-		fin_str text;
-		str_len int;
 	BEGIN
 		-- trim([leading | trailing | both] [characters] from string)
 		telephone_apres_trim := trim(both from telephone);
-		
-		-- char_length(string)
-		str_len := telephone_apres_trim;
-		
-		-- substring(string [from int] [for int])	
-		premier_char := substring(telephone_apres_trim from 1 for 1);	
-		fin_str      := substring(telephone_apres_trim from 2 for str_len);
-		
-		IF str_len = 10 AND (telephone_apres_trim ~ '^[0-9]+$')
-			THEN RETURN NEW;
-		ELSIF str_len = 11 AND (fin_str ~ '^[0-9]+$') AND premier_char = '+'
+				
+		IF (telephone_apres_trim ~ '^[0-9]{3}-[0-9]{3}-[0-9]{4}$')
 			THEN RETURN NEW;
 		END IF;
 		
-		RETURN NULL;
+		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
 	END;
 $$ LANGUAGE plpgsql;
 
+-- La table musicien
+
+/*  Par exemple:
+ *  projet_bdd=# UPDATE musicien SET musicien_telephone = '372-106-3084' WHERE musicien_id  = 1;
+ *  UPDATE 1
+ *  projet_bdd=# UPDATE musicien SET musicien_telephone = '372-1063084' WHERE musicien_id  = 1;
+ *  UPDATE 0
+ */
 CREATE TRIGGER verification_musicien_telephone
 BEFORE UPDATE ON musicien
-FOR EACH ROW
+FOR EACH ROW -- Avant la mise a jour de chaque ligne affectée
 WHEN (OLD.musicien_telephone != NEW.musicien_telephone)
 EXECUTE PROCEDURE verification_telephone(musicien_telephone);
 
+CREATE TRIGGER verification_musicien_telephone_insert
+BEFORE INSERT ON musicien -- Avant linsertion
+FOR EACH ROW 
+EXECUTE PROCEDURE verification_telephone(musicien_telephone);
 
+-- La table producteur
 
+CREATE TRIGGER verification_producteur_telephone
+BEFORE UPDATE ON producteur
+FOR EACH ROW -- Avant la mise a jour de chaque ligne affectée
+WHEN (OLD.producteur_telephone != NEW.producteur_telephone)
+EXECUTE PROCEDURE verification_telephone(producteur_telephone);
+
+CREATE TRIGGER verification_producteur_telephone_insert
+BEFORE INSERT ON producteur -- Avant linsertion
+FOR EACH ROW 
+EXECUTE PROCEDURE verification_telephone(producteur_telephone);
+
+-- La table agent
+
+CREATE TRIGGER verification_agent_telephone
+BEFORE UPDATE ON agent
+FOR EACH ROW -- Avant la mise a jour de chaque ligne affectée
+WHEN (OLD.agent_telephone != NEW.agent_telephone)
+EXECUTE PROCEDURE verification_telephone(agent_telephone);
+
+CREATE TRIGGER verification_agent_telephone_insert
+BEFORE INSERT ON agent -- Avant linsertion
+FOR EACH ROW 
+EXECUTE PROCEDURE verification_telephone(agent_telephone);
