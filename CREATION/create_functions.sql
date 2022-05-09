@@ -11,7 +11,8 @@ RETURNS BOOLEAN AS $$
 	BEGIN
 		
 		INSERT INTO musicien VALUES (default, nom, prenom, date_naissance ,telephone , adresse, mail);
-		RETURN TRUE;
+		RAISE NOTICE 'Insertion OK.';
+		RETURN NULL;
 	END;
 $$ LANGUAGE plpgsql;
  

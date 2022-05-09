@@ -90,12 +90,13 @@ CREATE OR REPLACE FUNCTION verification_telephone() RETURNS trigger AS $$
 	
 		-- trim ( [ LEADING | TRAILING | BOTH ] [ characters text ] FROM string text ) -> text
 		telephone_apres_trim := trim(both from telephone);
-		RAISE NOTICE 'TEST  % \n. %', telephone_apres_trim, TG_NARGS;
 				
 		IF (telephone_apres_trim ~ '^[0-9]{3}-[0-9]{3}-[0-9]{4}$')
+			RAISE NOTICE 'Le numero % a ete verifie.', telephone;
 			THEN RETURN NEW;
 		END IF;
 		
+		RAISE 'Insertion ou mise a jour impossible car le numero % est PAS correcte.', telephone USING ERRCODE='20003';
 		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
 	END;
 $$ LANGUAGE plpgsql;
@@ -187,15 +188,15 @@ CREATE OR REPLACE FUNCTION verification_email() RETURNS trigger AS $$
 				point_existe := true;
 			END IF;
 			
-			RAISE NOTICE 'TEST  % \n.', tab_email[i];
 			i := (i + 1);
 		END LOOP;
 		
 		IF arobase_existe AND point_existe THEN
+			RAISE NOTICE 'L adresse e-mail % a ete verifiee et s est averee valide.', email;
 			RETURN NEW;
 		END IF;
 		
-		RAISE 'Insertion ou mise a jour impossible car l adresse % est PAS une adresse mail correcte. % %', email, arobase_existe, point_existe USING ERRCODE='20003';
+		RAISE 'Insertion ou mise a jour impossible car l adresse % est PAS une adresse mail correcte.', email USING ERRCODE='20003';
 		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
 	END;
 $$ LANGUAGE plpgsql;
