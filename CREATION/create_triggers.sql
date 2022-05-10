@@ -74,7 +74,7 @@ CREATE OR REPLACE FUNCTION verification_telephone() RETURNS trigger AS $$
         -- À la place, on peut accéder aux arguments du trigger par TG_NARGS et TG_ARGV.
         -- TG_NARGS : le nombre d'arguments donnés à la fonction déclencheur dans l'instruction CREATE TRIGGER.
 		-- TG_ARGV[] : les arguments de l'instruction CREATE TRIGGER.
-		nom_table text := TG_ARGV[0];
+		nom_table text := TG_ARGV[0]; -- Premier index de TG_ARGV[] : 0
 		
 		telephone VARCHAR;
 		telephone_apres_trim text;

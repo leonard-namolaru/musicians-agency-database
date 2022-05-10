@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS AGENT (
     agent_prenom VARCHAR NOT NULL,
     agent_telephone VARCHAR NOT NULL,
     agent_mail VARCHAR NOT NULL,
-    agent_date_embauche VARCHAR NOT NULL,
+    agent_date_embauche DATE NOT NULL,
     
     PRIMARY KEY (agent_id),
     UNIQUE (agent_nom, agent_prenom, agent_telephone, agent_mail, agent_date_embauche)
