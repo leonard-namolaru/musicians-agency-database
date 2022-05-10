@@ -119,8 +119,7 @@ CREATE TABLE IF NOT EXISTS ALBUMS (
     album_date_fin DATE CHECK (album_date_debut < album_date_fin) NOT NULL,
     
     PRIMARY KEY (album_id)
-);
-
+);0
 
 
 CREATE TABLE IF NOT EXISTS JOUE (

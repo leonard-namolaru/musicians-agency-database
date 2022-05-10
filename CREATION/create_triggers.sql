@@ -91,9 +91,9 @@ CREATE OR REPLACE FUNCTION verification_telephone() RETURNS trigger AS $$
 		-- trim ( [ LEADING | TRAILING | BOTH ] [ characters text ] FROM string text ) -> text
 		telephone_apres_trim := trim(both from telephone);
 				
-		IF (telephone_apres_trim ~ '^[0-9]{3}-[0-9]{3}-[0-9]{4}$')
+		IF (telephone_apres_trim ~ '^[0-9]{3}-[0-9]{3}-[0-9]{4}$') THEN
 			RAISE NOTICE 'Le numero % a ete verifie.', telephone;
-			THEN RETURN NEW;
+			RETURN NEW;
 		END IF;
 		
 		RAISE 'Insertion ou mise a jour impossible car le numero % est PAS correcte.', telephone USING ERRCODE='20003';
