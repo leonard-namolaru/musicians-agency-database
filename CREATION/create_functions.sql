@@ -4,74 +4,6 @@
  * Exemple d'utilisation :
  * \include 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/create_functions.sql'
  */
- 
----------------------------------------- AGENT ---------------------------------------------------------
-
-/**
-  * Signature : agent_existe(nom text, prenom text, telephone text, date_embauche DATE) -> INTEGER
-  * Description : Une fonction qui reçoit comme paramètres nom, prenom, téléphone, etc. et vérifie si un tel agent existe.
-  * 
-  * Parametres :
-  ** nom text : la nom de l'agent.
-  ** prenom text : le prenom de l'agent.
-  ** telephone text : le telephone de l'agent (format : '123-456-1234')
-  ** date_embauche DATE : la date d'embauche de l'agent
-  *
-  * Valeur de retour : le numero d'id de l'agent si il existe ou -1 en cas d’erreur (l'agent existe PAS).
-  */
-CREATE OR REPLACE FUNCTION agent_existe(nom text, prenom text, telephone text, date_embauche DATE) 
-RETURNS INTEGER AS $$
-	DECLARE
-		id INTEGER;
-	BEGIN	
-			
-		SELECT agent_id INTO id
-		FROM agent 
-		WHERE agent_nom = nom 
-		      AND agent_prenom = prenom 
-		      AND agent_telephone = telephone 
-		      AND agent_mail = mail
-		      AND agent_date_embauche = date_embauche;
-		      
-		IF FOUND THEN 
-			RAISE NOTICE 'Agent existe , id = % .', id;
-			RETURN id;
-		END IF;
-			
-		RAISE NOTICE 'Agent existe pas.';
-		RETURN -1;
-	END;
-$$ LANGUAGE plpgsql;
-
-/**
-  * Signature : ajout_agent(nom text, prenom text, telephone text, date_embauche DATE) -> BOOLEAN
-  * Description : Une fonction qui reçoit comme paramètres : nom, prenom, téléphone, etc. et ajoute un nouveau agent s'il n'existe pas deja.
-  * 
-  * Parametres :
-  ** nom text : la nom de l'agent.
-  ** prenom text : le prenom de l'agent.
-  ** telephone text : le telephone de l'agent (format : '123-456-1234')
-  ** date_embauche DATE : la date d'embauche de l'agent
-  *
-  * Valeur de retour : true si l'agent est ajouté avec succès, false si l'agent existe déjà.
-  */
-CREATE OR REPLACE FUNCTION ajout_agent(nom text, prenom text, telephone text, date_embauche DATE) 
-RETURNS BOOLEAN AS $$
-	DECLARE
-	is_agent_existe INTEGER;
-	BEGIN
-		is_agent_existe := agent_existe(nom, prenom, telephone, date_embauche);
-	
-		IF is_agent_existe != -1 THEN
-			RAISE 'L agent est deja dans la base de donnees, son numero id dans la table des agents est : % .', is_agent_existe USING ERRCODE='10000';
-			RETURN FALSE;
-		END IF;
-		
-		INSERT INTO agent VALUES (default, nom, prenom, telephone, date_embauche);
-		RAISE NOTICE 'Insertion OK.';
-		RETURN TRUE;
-	END;
-$$ LANGUAGE plpgsql;
 
 ---------------------------------------- MUSICIEN ---------------------------------------------------------
 
@@ -113,8 +45,6 @@ RETURNS INTEGER AS $$
 		RETURN -1; 
 	END;
 $$ LANGUAGE plpgsql;
-
-
 
 /**
   * Signature : ajout_musicien(nom text, prenom text, date_naissance date, telephone text, adresse text, mail text, instruments INTEGER[], styles_musique INTEGER[]) -> BOOLEAN
@@ -184,3 +114,120 @@ RETURNS BOOLEAN AS $$
 		RETURN TRUE;
 	END;
 $$ LANGUAGE plpgsql;
+ 
+---------------------------------------- AGENT ---------------------------------------------------------
+
+/**
+  * Signature : agent_existe(nom text, prenom text, telephone text, date_embauche DATE) -> INTEGER
+  * Description : Une fonction qui reçoit comme paramètres nom, prenom, téléphone, etc. et vérifie si un tel agent existe.
+  * 
+  * Parametres :
+  ** nom text : la nom de l'agent.
+  ** prenom text : le prenom de l'agent.
+  ** telephone text : le telephone de l'agent (format : '123-456-1234')
+  ** date_embauche DATE : la date d'embauche de l'agent
+  *
+  * Valeur de retour : le numero d'id de l'agent si il existe ou -1 en cas d’erreur (l'agent existe PAS).
+  */
+CREATE OR REPLACE FUNCTION agent_existe(nom text, prenom text, telephone text, date_embauche DATE) 
+RETURNS INTEGER AS $$
+	DECLARE
+		id INTEGER;
+	BEGIN	
+			
+		SELECT agent_id INTO id
+		FROM agent 
+		WHERE agent_nom = nom 
+		      AND agent_prenom = prenom 
+		      AND agent_telephone = telephone 
+		      AND agent_mail = mail
+		      AND agent_date_embauche = date_embauche;
+		      
+		IF FOUND THEN 
+			RAISE NOTICE 'Agent existe , id = % .', id;
+			RETURN id;
+		END IF;
+			
+		RAISE NOTICE 'Agent existe pas.';
+		RETURN -1;
+	END;
+$$ LANGUAGE plpgsql;
+
+/**
+  * Signature : ajout_agent(nom text, prenom text, telephone text, date_embauche DATE) -> BOOLEAN
+  * Description : Une fonction qui reçoit comme paramètres : nom, prenom, téléphone, etc. et ajoute un nouveau agent s'il n'existe pas deja.
+  * 
+  * Parametres :
+  ** nom text : la nom de l'agent.
+  ** prenom text : le prenom de l'agent.
+  ** telephone text : le telephone de l'agent (format : '123-456-1234')
+  ** date_embauche DATE : la date d'embauche de l'agent
+  *
+  * Valeur de retour : true si l'agent est ajouté avec succès, false si l'agent existe déjà.
+  */
+CREATE OR REPLACE FUNCTION ajout_agent(nom text, prenom text, telephone text, date_embauche DATE) 
+RETURNS BOOLEAN AS $$
+	DECLARE
+	is_agent_existe INTEGER;
+	BEGIN
+		is_agent_existe := agent_existe(nom, prenom, telephone, date_embauche);
+	
+		IF is_agent_existe != -1 THEN
+			RAISE 'L agent est deja dans la base de donnees, son numero id dans la table des agents est : % .', is_agent_existe USING ERRCODE='10000';
+			RETURN FALSE;
+		END IF;
+		
+		INSERT INTO agent VALUES (default, nom, prenom, telephone, date_embauche);
+		RAISE NOTICE 'Insertion OK.';
+		RETURN TRUE;
+	END;
+$$ LANGUAGE plpgsql;
+
+
+---------------------------------------- PRODUCTEUR -----------------------------------------------------------
+
+---------------------------------------- INSTRUMENT -----------------------------------------------------------
+
+---------------------------------------- STYLE_MUSIQUE ---------------------------------------------------------
+
+---------------------------------------- CONTRAT_ARTISTE_PRODUCTEUR --------------------------------------------
+
+---------------------------------------- DEMANDE ---------------------------------------------------------------
+
+/**
+  * Signature : trouver_musiciens_repondre_demande(id_demande integer, musiciens_exclure_resultats integer[]) -> BOOLEAN
+  * Description : Trouver des musiciens pour répondre à une demande
+  * 
+  * Parametres :
+  ** id_demande integer : la nom de l'agent.
+  ** musiciens_exclure_resultats integer[] : Musiciens à exclure des résultats
+  *
+  * Valeur de retour : true si l'agent est ajouté avec succès, false si l'agent existe déjà.
+  */
+CREATE OR REPLACE FUNCTION trouver_musiciens_repondre_demande(id_demande integer, musiciens_exclure_resultats integer[]) 
+RETURNS BOOLEAN AS $$
+	DECLARE
+	is_agent_existe INTEGER;
+	BEGIN
+		is_agent_existe := agent_existe(nom, prenom, telephone, date_embauche);
+	
+		IF is_agent_existe != -1 THEN
+			RAISE 'L agent est deja dans la base de donnees, son numero id dans la table des agents est : % .', is_agent_existe USING ERRCODE='10000';
+			RETURN FALSE;
+		END IF;
+		
+		INSERT INTO agent VALUES (default, nom, prenom, telephone, date_embauche);
+		RAISE NOTICE 'Insertion OK.';
+		RETURN TRUE;
+	END;
+$$ LANGUAGE plpgsql;
+
+---------------------------------------- CONTRAT_AGENT_ARTISTE -------------------------------------------------
+
+---------------------------------------- PAIEMENT_ARTISTE ------------------------------------------------------
+
+---------------------------------------- ALBUMS ----------------------------------------------------------------
+
+---------------------------------------- JOUE ------------------------------------------------------------------
+
+---------------------------------------- MAITRISE ------------------------------------------------------------------
