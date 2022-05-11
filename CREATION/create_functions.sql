@@ -196,32 +196,29 @@ $$ LANGUAGE plpgsql;
 
 /**
   * Signature : trouver_musiciens_repondre_demande(id_demande integer, musiciens_exclure_resultats integer[]) -> BOOLEAN
-  * Description : Trouver des musiciens pour répondre à une demande
+  * Description : Trouver des musiciens pour répondre à une demande. C'est-à-dire que la fonction trouve la liste des musiciens 
+  * 			  qui contrôlent l'instrument qui apparaît dans la demande et en même temps ce sont des musiciens dont le style 
+  *               de musique est tel qu'il apparaît dans la demande.
   * 
   * Parametres :
-  ** id_demande integer : la nom de l'agent.
-  ** musiciens_exclure_resultats integer[] : Musiciens à exclure des résultats
+  ** id_demande integer : ID de la demande.
   *
-  * Valeur de retour : true si l'agent est ajouté avec succès, false si l'agent existe déjà.
+  * Valeur de retour : La fonction retourne un type “ensemble” (SETOF) de la table musicien 
   */
-CREATE OR REPLACE FUNCTION trouver_musiciens_repondre_demande(id_demande integer, musiciens_exclure_resultats integer[]) 
-RETURNS BOOLEAN AS $$
+CREATE OR REPLACE FUNCTION trouver_musiciens_repondre_demande(id_demande integer) 
+RETURNS SETOF musicien AS $$
+-- La fonction retourne un type “ensemble” (SETOF)
 	DECLARE
-	is_agent_existe INTEGER;
+		demande demande%ROWTYPE;
 	BEGIN
-		is_agent_existe := agent_existe(nom, prenom, telephone, date_embauche);
-	
-		IF is_agent_existe != -1 THEN
-			RAISE 'L agent est deja dans la base de donnees, son numero id dans la table des agents est : % .', is_agent_existe USING ERRCODE='10000';
-			RETURN FALSE;
+		SELECT * INTO demande FROM demande WHERE demande_id = id_demande;
+		IF NOT FOUND THEN 
+			RAISE EXCEPTION 'La demande numero % est inexistante  ', id_demande USING ERRCODE = '10002' ; 
 		END IF;
 		
-		INSERT INTO agent VALUES (default, nom, prenom, telephone, date_embauche);
-		RAISE NOTICE 'Insertion OK.';
-		RETURN TRUE;
+		RETURN QUERY SELECT * FROM musicien WHERE musicien_id IN (SELECT musicien_id FROM joue WHERE instrument_id = demande.instrument_id) AND musicien_id IN (SELECT musicien_id FROM maitrise WHERE style_id = demande.style_musique_id);
 	END;
 $$ LANGUAGE plpgsql;
-
 ---------------------------------------- CONTRAT_AGENT_ARTISTE -------------------------------------------------
 
 ---------------------------------------- PAIEMENT_ARTISTE ------------------------------------------------------
