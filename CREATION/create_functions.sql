@@ -213,12 +213,77 @@ RETURNS SETOF musicien AS $$
 	BEGIN
 		SELECT * INTO demande FROM demande WHERE demande_id = id_demande;
 		IF NOT FOUND THEN 
-			RAISE EXCEPTION 'La demande numero % est inexistante  ', id_demande USING ERRCODE = '10002' ; 
+			RAISE EXCEPTION 'La demande numero % est inexistante.', id_demande USING ERRCODE = '10002' ; 
 		END IF;
 		
 		RETURN QUERY SELECT * FROM musicien WHERE musicien_id IN (SELECT musicien_id FROM joue WHERE instrument_id = demande.instrument_id) AND musicien_id IN (SELECT musicien_id FROM maitrise WHERE style_id = demande.style_musique_id);
 	END;
 $$ LANGUAGE plpgsql;
+
+/**
+  * Signature : trouver_musiciens_repondre_demande(id_demande integer) -> SETOF musicien
+  * Description : Trouver des musiciens pour répondre à une demande. C'est-à-dire que la fonction trouve la liste des musiciens 
+  * 			  qui contrôlent l'instrument qui apparaît dans la demande et en même temps ce sont des musiciens dont le style 
+  *               de musique est tel qu'il apparaît dans la demande.
+  * 
+  * Parametres :
+  ** id_demande integer : ID de la demande.
+  *
+  * Valeur de retour : La fonction retourne un type “ensemble” (SETOF) de la table musicien 
+  */
+CREATE OR REPLACE FUNCTION trouver_musiciens_repondre_demande(id_demande integer) 
+RETURNS SETOF musicien AS $$
+-- La fonction retourne un type “ensemble” (SETOF)
+	DECLARE
+		demande demande%ROWTYPE;
+	BEGIN
+		SELECT * INTO demande FROM demande WHERE demande_id = id_demande;
+		IF NOT FOUND THEN 
+			RAISE EXCEPTION 'La demande numero % est inexistante.', id_demande USING ERRCODE = '10002' ; 
+		END IF;
+		
+		RETURN QUERY SELECT * FROM musicien WHERE musicien_id IN (SELECT musicien_id FROM joue WHERE instrument_id = demande.instrument_id) 
+		                                    AND musicien_id IN (SELECT musicien_id FROM maitrise WHERE style_id = demande.style_musique_id);
+	END;
+$$ LANGUAGE plpgsql;
+
+/**
+  * Signature   : trouver_demandes_adaptees_musicien(id_musicien integer)  ->  SETOF demande
+  * Description : Trouver des demandes adaptées a un musicien
+  * 
+  *  Parametres :
+  ** id_musicien integer : ID du musicien.
+  *
+  * Valeur de retour : La fonction retourne un type “ensemble” (SETOF) de la table demande 
+  */
+CREATE OR REPLACE FUNCTION trouver_demandes_adaptees_musicien(id_musicien integer) 
+RETURNS SETOF demande AS $$
+-- La fonction retourne un type “ensemble” (SETOF)
+	DECLARE
+		instruments integer[];
+		styles_musique integer[];
+	BEGIN
+		
+		instruments := ARRAY (SELECT instrument_id FROM joue WHERE musicien_id = id_musicien);
+		
+		-- array_length ( anyarray, integer ) -> integer
+		-- Renvoie la longueur de la dimension de tableau demandée.
+		IF ( (array_length(instruments, 1)) = 0) THEN 
+			RAISE EXCEPTION 'Aucun instrument trouve pour un musicien dont le numero id est % .', id_musicien USING ERRCODE = '10003' ; 
+		END IF;
+				
+		styles_musique := ARRAY (SELECT style_id FROM maitrise WHERE musicien_id = id_musicien);
+		IF ( (array_length(styles_musique, 1)) = 0) THEN 
+			RAISE EXCEPTION 'Aucun style de musique trouve pour un musicien dont le numero id est % .', id_musicien USING ERRCODE = '10004' ; 
+		END IF;		
+		
+		RETURN QUERY SELECT * FROM demande WHERE instrument_id = ANY (instruments::int[]) 
+		                               AND style_musique_id = ANY (styles_musique::int[])
+		                               AND demande_date_fin >= CURRENT_DATE;
+	END;
+$$ LANGUAGE plpgsql;
+
+
 ---------------------------------------- CONTRAT_AGENT_ARTISTE -------------------------------------------------
 
 ---------------------------------------- PAIEMENT_ARTISTE ------------------------------------------------------
