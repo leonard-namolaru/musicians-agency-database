@@ -5,6 +5,7 @@
 -- Table paiement_artiste
 DROP TRIGGER IF EXISTS verification_honoraire_update ON paiement_artiste;
 DROP TRIGGER IF EXISTS verification_honoraire_insert ON paiement_artiste;
+DROP TRIGGER IF EXISTS verification_montant_brut ON paiement_artiste;
 
 -- Table musicien
 DROP TRIGGER IF EXISTS verification_musicien_telephone ON musicien;
@@ -55,6 +56,34 @@ CREATE OR REPLACE FUNCTION verification_honoraire_agence() RETURNS trigger AS $$
 	END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION verification_montant_brut() RETURNS trigger AS $$
+	DECLARE
+		paiements_anterieurs integer; -- Montant des paiements antérieurs
+		contrat_renumeration_total integer;
+	BEGIN
+	    SELECT C.contrat_renumeration INTO contrat_renumeration_total
+		FROM  contrat_artiste_producteur AS C
+		WHERE C.contrat_id = NEW.contrat_id;
+			    
+		SELECT SUM(C.paiement_montant_brut) INTO paiements_anterieurs
+		FROM paiement_artiste AS C
+		WHERE C.contrat_id = NEW.contrat_id
+		GROUP BY C.contrat_id;
+		
+		IF NOT FOUND THEN 
+			paiements_anterieurs := 0;
+		END IF;
+		
+		IF ((NEW.paiement_montant_brut + paiements_anterieurs) <= contrat_renumeration_total)
+			THEN RETURN NEW;
+			RAISE NOTICE 'Insertion ou mise a jour ok car (paiement montant brut + paiements anterieurs) <= (renumeration total du contrat) : % >  % .', (NEW.paiement_montant_brut + paiements_anterieurs), paiements_anterieurs;
+		END IF;
+		
+		RAISE 'Insertion ou mise a jour impossible car (paiement montant brut + paiements anterieurs) > (renumeration total du contrat) : % >  % .', (NEW.paiement_montant_brut + paiements_anterieurs), paiements_anterieurs USING ERRCODE='20005';
+		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
+	END;
+$$ LANGUAGE plpgsql;
+
 CREATE TRIGGER verification_honoraire_update
 BEFORE UPDATE ON paiement_artiste
 FOR EACH ROW -- Avant la mise a jour de chaque ligne affectée
@@ -65,6 +94,12 @@ CREATE TRIGGER verification_honoraire_insert
 BEFORE INSERT ON paiement_artiste -- Avant linsertion
 FOR EACH ROW 
 EXECUTE PROCEDURE verification_honoraire_agence();
+
+CREATE TRIGGER verification_montant_brut
+BEFORE INSERT OR UPDATE ON paiement_artiste -- Avant linsertion / mise a jour de chaque ligne affectée
+FOR EACH ROW 
+EXECUTE PROCEDURE verification_montant_brut();
+
 
 --- Les tables musicien, agent, producteur
 -- Les numéros de téléphone doivent être au format suivant : 263-958-0726
@@ -196,7 +231,7 @@ CREATE OR REPLACE FUNCTION verification_email() RETURNS trigger AS $$
 			RETURN NEW;
 		END IF;
 		
-		RAISE 'Insertion ou mise a jour impossible car l adresse % est PAS une adresse mail correcte.', email USING ERRCODE='20003';
+		RAISE 'Insertion ou mise a jour impossible car l adresse % est PAS une adresse mail correcte.', email USING ERRCODE='20004';
 		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
 	END;
 $$ LANGUAGE plpgsql;

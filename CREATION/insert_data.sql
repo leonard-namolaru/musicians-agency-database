@@ -11,7 +11,7 @@ COPY style_musique FROM 'C:\Users\Public\Csv files\table style_musique.csv' CSV 
 COPY contrat_artiste_producteur FROM 'C:\Users\Public\Csv files\table contrat_artiste_producteur.csv' CSV HEADER; --100 rows
 COPY demande FROM 'C:\Users\Public\Csv files\table demande.csv' CSV HEADER; --50 rows
 COPY contrat_agent_artiste FROM 'C:\Users\Public\Csv files\table contrat_agent_artiste.csv' CSV HEADER;--100 rows
-COPY paiement_artiste FROM 'C:\Users\Public\Csv files\table paiement_artiste.csv' CSV HEADER;--100 rows ( matching the contrats)
+COPY paiement_artiste FROM 'C:\Users\Public\Csv files\table paiement_artiste.csv' CSV HEADER;--95 rows ( matching the contrats)
 COPY albums FROM 'C:\Users\Public\Csv files\table album.csv' CSV HEADER; --30
 COPY joue FROM 'C:\Users\Public\Csv files\table joue.csv' CSV HEADER;--1000 rows (matching the musicians)
 COPY maitrise FROM 'C:\Users\Public\Csv files\table maitrise.csv' CSV HEADER; --1000 rows (matching the musicians)
