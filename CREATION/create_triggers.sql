@@ -56,6 +56,9 @@ CREATE OR REPLACE FUNCTION verification_honoraire_agence() RETURNS trigger AS $$
 	END;
 $$ LANGUAGE plpgsql;
 
+-- Avant d'ajouter ou de mettre à jour un paiement : 
+-- La fonction vérifie que le montant des paiements pour le contrat jusqu'à présent avec le nouveau paiement 
+-- ne dépasse pas le montant spécifié dans le contrat.
 CREATE OR REPLACE FUNCTION verification_montant_brut() RETURNS trigger AS $$
 	DECLARE
 		paiements_anterieurs integer; -- Montant des paiements antérieurs
