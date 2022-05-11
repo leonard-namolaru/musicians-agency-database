@@ -249,7 +249,9 @@ $$ LANGUAGE plpgsql;
 
 /**
   * Signature   : trouver_demandes_adaptees_musicien(id_musicien integer)  ->  SETOF demande
-  * Description : Trouver des demandes adaptées a un musicien
+  * Description : Trouver les demandes adaptées a un musicien. C'est-à-dire des demandes qui 
+  *               n'ont pas encore expiré (qui n'ont pas encore atteint leur date de fin) et 
+  *               qui incluent des instruments de musique et un style de musique qui conviennent au musicien.
   * 
   *  Parametres :
   ** id_musicien integer : ID du musicien.
