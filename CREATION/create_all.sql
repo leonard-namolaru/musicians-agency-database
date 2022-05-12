@@ -102,13 +102,20 @@ CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
     PRIMARY KEY (contrat_id)
 );
 
+
+/* PAIEMENT_ARTISTE : Comptabilité
+ * On maintient la trace de tout paiement que chaque artiste (musicien) recoit avec, evidemment, des references
+ * qui permettent de connaitre le contrat concerné par le paiement (CONTRAT_ARTISTE_PRODUCTEUR).
+ * On maintient également l’information concernant les honoraires percus par lagence.
+*/
 CREATE TABLE IF NOT EXISTS PAIEMENT_ARTISTE (
     paiements_id INTEGER NOT NULL,
     contrat_id INTEGER REFERENCES CONTRAT_ARTISTE_PRODUCTEUR,
     paiements_date DATE NOT NULL,
     paiement_montant_brut INTEGER CHECK (paiement_montant_brut > 0) NOT NULL,
-    paiement_honoraire_agence INTEGER CHECK (paiement_honoraire_agence > 0) NOT NULL,
+    paiement_honoraire_agence INTEGER CHECK (paiement_honoraire_agence > 0 AND paiement_honoraire_agence < paiement_montant_brut) NOT NULL,
     
+    -- paiement_artiste est une entité faible car un paiement est attaché a un contrat.
     PRIMARY KEY (paiements_id,contrat_id)
 );
 
