@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
     contrat_date_debut DATE NOT NULL,
     contrat_date_fin DATE CHECK (contrat_date_debut < contrat_date_fin) NOT NULL,
     contrat_renumeration INTEGER CHECK (contrat_renumeration > 0) NOT NULL,
-    contrat_pourcentage_benefice INTEGER CHECK (contrat_pourcentage_benefice >= 0) NOT NULL,
     musicien_id INTEGER NOT NULL REFERENCES MUSICIEN,
     producteur_id INTEGER NOT NULL REFERENCES PRODUCTEUR,
     
@@ -88,7 +87,6 @@ CREATE TABLE IF NOT EXISTS DEMANDE (
     
     PRIMARY KEY (demande_id)
 );
-
 
 
 CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
@@ -126,7 +124,7 @@ CREATE TABLE IF NOT EXISTS ALBUMS (
     album_date_fin DATE CHECK (album_date_debut < album_date_fin) NOT NULL,
     
     PRIMARY KEY (album_id)
-);0
+);
 
 
 CREATE TABLE IF NOT EXISTS JOUE (

@@ -30,7 +30,7 @@ CREATE OR REPLACE FUNCTION verification_honoraire_agence() RETURNS trigger AS $$
 		SELECT C.contrat_pourcentage_agence INTO pourcentage_agence
 		FROM contrat_agent_artiste AS C
 		WHERE C.musicien_id = musicien 
-		AND ( (C.contrat_debut >= date_debut_contrat_artiste_producteur AND C.contrat_fin = NULL) OR (C.contrat_debut >= date_debut_contrat_artiste_producteur AND C.contrat_fin <= date_fin_contrat_artiste_producteur) );
+		AND ( (C.contrat_debut <= date_debut_contrat_artiste_producteur AND C.contrat_fin = NULL) OR (C.contrat_debut <= date_debut_contrat_artiste_producteur AND C.contrat_fin >= date_fin_contrat_artiste_producteur) );
 		
 		-- Pour des triggers BEFORE de type FOR EACH ROW :
 		-- si un trigger renvoie NULL, la mise à jour / insertion sur la ligne courante
@@ -40,7 +40,7 @@ CREATE OR REPLACE FUNCTION verification_honoraire_agence() RETURNS trigger AS $$
 			RAISE 'Insertion ou mise a jour impossible car pas de contrat agent-artiste en cours .' USING ERRCODE='20006';
 			RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
 		ELSEIF  ((NEW.paiement_montant_brut * pourcentage_agence) / 100) != NEW.paiement_honoraire_agence THEN
-			RAISE 'Insertion ou mise a jour impossible car (montant brut * pourcentage agence) != (honoraire agence) : % < % .', ((NEW.paiement_montant_brut * pourcentage_agence) / 100), NEW.paiement_honoraire_agence USING ERRCODE='20006';
+			RAISE 'Insertion ou mise a jour impossible car (montant brut * pourcentage agence) != (honoraire agence) : % != % .', ((NEW.paiement_montant_brut * pourcentage_agence) / 100), NEW.paiement_honoraire_agence USING ERRCODE='20006';
 			RETURN NULL; 
 		END IF;
 		RETURN NEW;
@@ -89,3 +89,38 @@ CREATE TRIGGER verification_montant_brut
 BEFORE INSERT OR UPDATE ON paiement_artiste 
 FOR EACH ROW 
 EXECUTE PROCEDURE verification_montant_brut();
+
+
+---------------------------------------- CONTRAT_ARTISTE_PRODUCTEUR --------------------------------------------
+DROP TRIGGER IF EXISTS verification_contrat_avec_agent ON contrat_artiste_producteur;
+
+-- Un artiste ne peut signer un contrat avec un producteur sans avoir un contrat avec un agent
+CREATE OR REPLACE FUNCTION verification_contrat_avec_agent() RETURNS trigger AS $$
+	DECLARE
+		contrat integer;
+	BEGIN
+				    
+		SELECT C.contrat_id INTO contrat
+		FROM contrat_agent_artiste AS C
+		WHERE C.musicien_id = NEW.musicien_id 
+		AND ( (C.contrat_debut <= NEW.contrat_date_debut AND C.contrat_fin = NULL) OR (C.contrat_debut <= NEW.contrat_date_debut AND C.contrat_fin >= NEW.contrat_date_fin) );
+		
+		-- Pour des triggers BEFORE de type FOR EACH ROW :
+		-- si un trigger renvoie NULL, la mise à jour / insertion sur la ligne courante
+		-- ainsi que tous les triggers suivants sur cette même ligne - sont annulés
+		
+		IF NOT FOUND THEN -- Si pas de contrat
+			RAISE 'Insertion ou mise a jour impossible car pas de contrat agent-artiste en cours pour la periode du contrat artiste - producteur.' USING ERRCODE='20007';
+			RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
+		END IF;
+		
+		RAISE NOTICE 'Insertion ou mise a jour ok car il y a un contrat agent-artiste en cours pour la periode du contrat artiste-producteur. ID de ce contrat : % ', contrat;
+		RETURN NEW;
+	END;
+$$ LANGUAGE plpgsql;
+
+-- Avant linsertion / mise a jour de chaque ligne affectée
+CREATE TRIGGER verification_contrat_avec_agent
+BEFORE INSERT OR UPDATE ON contrat_artiste_producteur 
+FOR EACH ROW 
+EXECUTE PROCEDURE verification_contrat_avec_agent();
