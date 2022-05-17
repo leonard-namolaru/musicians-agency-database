@@ -109,6 +109,11 @@ CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
     PRIMARY KEY (contrat_id)
 );
 
+-- CREATE INDEX nom_index ON nom_table (nom_attribut);
+CREATE INDEX contrat_date_debut_index ON CONTRAT_ARTISTE_PRODUCTEUR (contrat_date_debut);
+CREATE INDEX contrat_date_fin_index ON CONTRAT_ARTISTE_PRODUCTEUR (contrat_date_fin);
+CREATE INDEX contrat_musicien_id_index ON CONTRAT_ARTISTE_PRODUCTEUR (musicien_id);
+
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE contrat_id_artiste_producteur_seq OWNED BY contrat_artiste_producteur.contrat_id;
 ALTER TABLE contrat_artiste_producteur ALTER COLUMN contrat_id SET DEFAULT nextval('contrat_id_artiste_producteur_seq');
@@ -125,6 +130,10 @@ CREATE TABLE IF NOT EXISTS DEMANDE (
     PRIMARY KEY (demande_id)
 );
 
+-- CREATE INDEX nom_index ON nom_table (nom_attribut);
+CREATE INDEX instrument_id_index ON DEMANDE (instrument_id);
+CREATE INDEX style_musique_id_index ON DEMANDE (style_musique_id);
+
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE demande_id_seq OWNED BY demande.demande_id;
 ALTER TABLE demande ALTER COLUMN demande_id SET DEFAULT nextval('demande_id_seq');
@@ -140,6 +149,11 @@ CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
     
     PRIMARY KEY (contrat_id)
 );
+
+-- CREATE INDEX nom_index ON nom_table (nom_attribut);
+CREATE INDEX contrat_debut_index ON CONTRAT_AGENT_ARTISTE (contrat_debut);
+CREATE INDEX contrat_fin_index ON CONTRAT_AGENT_ARTISTE (contrat_fin);
+CREATE INDEX musicien_id_index ON CONTRAT_AGENT_ARTISTE (musicien_id);
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE contrat_id_agent_artiste_seq OWNED BY contrat_agent_artiste.contrat_id;
@@ -161,6 +175,7 @@ CREATE TABLE IF NOT EXISTS PAIEMENT_ARTISTE (
     -- paiement_artiste est une entité faible car un paiement est attaché a un contrat.
     PRIMARY KEY (paiements_id,contrat_id)
 );
+
 
 CREATE TABLE IF NOT EXISTS ALBUMS (
     album_id INTEGER NOT NULL,
