@@ -9,7 +9,7 @@
  
  \echo ' INSERT INTO contrat_agent_artiste (contrat_id, contrat_debut, contrat_fin, contrat_pourcentage_agence, musicien_id, agent_id) VALUES (default, 2022-05-27, 2023-01-27, 10, 84, 89);'
  INSERT INTO contrat_agent_artiste (contrat_id, contrat_debut, contrat_fin, contrat_pourcentage_agence, musicien_id, agent_id)
- VALUES (101, '2022-05-27', '2023-01-27', 10, 84, 89);
+ VALUES (default, '2022-05-27', '2023-01-27', 10, 84, 89);
  
  \echo 'Resultat : message d erreur ! '
  \echo 'La raison :'
@@ -28,7 +28,7 @@ AND ( (contrat_debut <= '2022-05-27' AND contrat_fin = NULL) OR (contrat_debut <
 \echo 'Par contre : '
  \echo ' INSERT INTO contrat_agent_artiste (contrat_id, contrat_debut, contrat_fin, contrat_pourcentage_agence, musicien_id, agent_id) VALUES (default, 2023-11-16, 2024-01-27, 10, 84, 89);'
  INSERT INTO contrat_agent_artiste (contrat_id, contrat_debut, contrat_fin, contrat_pourcentage_agence, musicien_id, agent_id)
- VALUES (101, '2023-11-16', '2024-01-27', 10, 84, 89);
+ VALUES (default, '2023-11-16', '2024-01-27', 10, 84, 89);
 
 DELETE FROM contrat_agent_artiste WHERE contrat_debut = '2023-11-16' AND contrat_fin = '2024-01-27' AND contrat_pourcentage_agence = 10 AND musicien_id = 84 AND agent_id = 89; 
 

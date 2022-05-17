@@ -1,5 +1,6 @@
-
----------------------------------------- MUSICIEN ---------------------------------------------------------
+/* Exemple d'utilisation :
+ * \include 'C:/Users/lenny/git/bdav-agence-artistique/TESTS/tests_musicien_existe_ajout_musicien.sql'
+ */
 
 --- musicien_existe(nom text, prenom text, date_naissance date, telephone text, adresse text, mail text) -> INTEGER
 

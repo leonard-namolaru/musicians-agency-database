@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS MUSICIEN (
 );
 
 CREATE SEQUENCE musicien_id_seq OWNED BY musicien.musicien_id;
-ALTER TABLE musicien ALTER COLUMN musicien_id SET DEFAULT nextval('musicien_id_seq');
+ALTER TABLE musicien ALTER COLUMN musicien_id SET DEFAULT (nextval('musicien_id_seq') + 1000);
 
 
 CREATE TABLE IF NOT EXISTS AGENT (
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS AGENT (
 );
 
 CREATE SEQUENCE agent_id_seq OWNED BY agent.agent_id;
-ALTER TABLE agent ALTER COLUMN agent_id SET DEFAULT nextval('agent_id_seq');
+ALTER TABLE agent ALTER COLUMN agent_id SET DEFAULT (nextval('agent_id_seq') + 1000);
 
 CREATE TABLE IF NOT EXISTS PRODUCTEUR (
     producteur_id INTEGER NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS PRODUCTEUR (
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE producteur_id_seq OWNED BY producteur.producteur_id;
-ALTER TABLE producteur ALTER COLUMN producteur_id SET DEFAULT nextval('producteur_id_seq');
+ALTER TABLE producteur ALTER COLUMN producteur_id SET DEFAULT (nextval('producteur_id_seq') + 1000);
 
 CREATE TABLE IF NOT EXISTS INSTRUMENT (
     instrument_id INTEGER NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS INSTRUMENT (
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE instrument_id_seq OWNED BY instrument.instrument_id;
-ALTER TABLE instrument ALTER COLUMN instrument_id SET DEFAULT nextval('instrument_id_seq');
+ALTER TABLE instrument ALTER COLUMN instrument_id SET DEFAULT (nextval('instrument_id_seq') + 6);
 
 CREATE TABLE IF NOT EXISTS STYLE_MUSIQUE(
     style_id INTEGER NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS STYLE_MUSIQUE(
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE style_id_seq OWNED BY style_musique.style_id;
-ALTER TABLE style_musique ALTER COLUMN style_id SET DEFAULT nextval('style_id_seq');
+ALTER TABLE style_musique ALTER COLUMN style_id SET DEFAULT (nextval('style_id_seq') + 6);
 
 CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
     contrat_id INTEGER NOT NULL,
@@ -116,7 +116,7 @@ CREATE INDEX contrat_musicien_id_index ON CONTRAT_ARTISTE_PRODUCTEUR (musicien_i
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE contrat_id_artiste_producteur_seq OWNED BY contrat_artiste_producteur.contrat_id;
-ALTER TABLE contrat_artiste_producteur ALTER COLUMN contrat_id SET DEFAULT nextval('contrat_id_artiste_producteur_seq');
+ALTER TABLE contrat_artiste_producteur ALTER COLUMN contrat_id SET DEFAULT (nextval('contrat_id_artiste_producteur_seq') + 1);
 
 
 CREATE TABLE IF NOT EXISTS DEMANDE (
@@ -136,7 +136,7 @@ CREATE INDEX style_musique_id_index ON DEMANDE (style_musique_id);
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE demande_id_seq OWNED BY demande.demande_id;
-ALTER TABLE demande ALTER COLUMN demande_id SET DEFAULT nextval('demande_id_seq');
+ALTER TABLE demande ALTER COLUMN demande_id SET DEFAULT (nextval('demande_id_seq') + 50);
 
 
 CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
@@ -157,7 +157,7 @@ CREATE INDEX musicien_id_index ON CONTRAT_AGENT_ARTISTE (musicien_id);
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE contrat_id_agent_artiste_seq OWNED BY contrat_agent_artiste.contrat_id;
-ALTER TABLE contrat_agent_artiste ALTER COLUMN contrat_id SET DEFAULT nextval('contrat_id_agent_artiste_seq');
+ALTER TABLE contrat_agent_artiste ALTER COLUMN contrat_id SET DEFAULT (nextval('contrat_id_agent_artiste_seq') + 100);
 
 
 /* PAIEMENT_ARTISTE : Comptabilité
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS ALBUMS (
 
 -- Convertir le champ id de la table en auto-increment (incrémentation automatique)
 CREATE SEQUENCE album_id_seq OWNED BY albums.album_id;
-ALTER TABLE albums ALTER COLUMN album_id SET DEFAULT nextval('album_id_seq');
+ALTER TABLE albums ALTER COLUMN album_id SET DEFAULT (nextval('album_id_seq') + 30);
 
 
 CREATE TABLE IF NOT EXISTS JOUE (
