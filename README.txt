@@ -1,4 +1,3 @@
-
 README.txt
 ----------------------------
 
@@ -47,8 +46,8 @@ Il est recommandé de placer les fichiers sous le dossier 'C:\Users\Public' (si 
 projet_bdd=# \i 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/insert_data.sql'
 
 Si vous recevez un message d'erreur de type "ERREUR: valeur du champ date/time en dehors des limites ...Peut-être avez-vous besoin d'un paramétrage « datestyle » différent.",
-une façon de résoudre ce problème est de taper la commande suivante [2] :
-projet_bdd=# SET DATESTYLE = PostgreSQL; 
+une façon de résoudre ce problème est de taper la commande suivante (format : dd/mm/yyyy) [2] :
+projet_bdd=# SET DATESTYLE = US; 
 
 
 [1] Permission Denied error when using PostgreSQL's COPY FROM/TO command : https://www.neilwithdata.com/copy-permission-denied
