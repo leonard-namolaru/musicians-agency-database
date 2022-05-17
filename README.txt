@@ -2,7 +2,7 @@ README.txt
 ----------------------------
 
 1. Auteurs du projet
-- Sofien HENCHIR : sofien.henchir.tn@gmail.com (Groupe de TP : vendredi) , Numéro étudiant : 
+- Sofien HENCHIR : sofien.henchir.tn@gmail.com (Groupe de TP : vendredi) , Numéro étudiant : 22107241
 - Leonard NAMOLARU : leonard.namolaru@etu.u-paris.fr (Groupe de TP : mercredi) , Numéro étudiant : 51704115
 
 2. Informations générales
@@ -38,15 +38,18 @@ Vous êtes maintenant connecté à la base de données « projet_bdd » en tant 
 3.L'importation du fichier create_all.sql peut être effectuée par la commande suivante :
 projet_bdd=# \i 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/create_all.sql'
 
-4. Ouvrez, s'il vous plaît, le fichier /CREATION/insert_data.sql et modifiez les chemins des fichiers .csv en fonction de l'emplacement où ils se trouvent sur votre ordinateur.
+4. \include 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/create_triggers.sql'
+5. \include 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/create_functions.sql'
+
+6. Ouvrez, s'il vous plaît, le fichier /CREATION/insert_data.sql et modifiez les chemins des fichiers .csv en fonction de l'emplacement où ils se trouvent sur votre ordinateur.
 Pour éviter de recevoir des messages d'erreur de type "ERREUR:  n'a pas pu ouvrir le fichier ... pour une lecture : Permission denied",
 Il est recommandé de placer les fichiers sous le dossier 'C:\Users\Public' (si vous utilisez Windows) ou sous '/tmp' (si vous utilisez Mac ou Linux) [1].
 
-5. Les données peuvent maintenant être importées :
+7. Les données peuvent maintenant être importées :
 projet_bdd=# \i 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/insert_data.sql'
 
 Si vous recevez un message d'erreur de type "ERREUR: valeur du champ date/time en dehors des limites ...Peut-être avez-vous besoin d'un paramétrage « datestyle » différent.",
-une façon de résoudre ce problème est de taper la commande suivante (format : dd/mm/yyyy) [2] :
+une façon de résoudre ce problème est de taper la commande suivante (pour le format : dd/mm/yyyy) [2] :
 projet_bdd=# SET DATESTYLE = US; 
 
 
