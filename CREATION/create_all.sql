@@ -1,14 +1,30 @@
-DROP TABLE IF EXISTS AGENT;
-DROP TABLE IF EXISTS DEMANDE;
-DROP TABLE IF EXISTS INSTRUMENT;
-DROP TABLE IF EXISTS CONTRAT_AGENT_ARTISTE;
-DROP TABLE IF EXISTS PAIEMENT_ARTISTE;
-DROP TABLE IF EXISTS ALBUMS;
-DROP TABLE IF EXISTS STYLE_MUSIQUE;
-DROP TABLE IF EXISTS CONTRAT_ARTISTE_PRODUCTEUR;
-DROP TABLE IF EXISTS MUSICIEN;
-DROP TABLE IF EXISTS PRODUCTEUR;
-DROP TABLE IF EXISTS MAITRISE;
+/*
+ * Exemple d'utilisation :
+ * \include 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/create_all.sql'
+ */
+
+DROP SEQUENCE IF EXISTS musicien_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS agent_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS producteur_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS instrument_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS style_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS contrat_id_artiste_producteur_seq CASCADE;
+DROP SEQUENCE IF EXISTS demande_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS contrat_id_agent_artiste_seq CASCADE;
+DROP SEQUENCE IF EXISTS album_id_seq CASCADE;
+
+DROP TABLE IF EXISTS AGENT CASCADE;
+DROP TABLE IF EXISTS DEMANDE CASCADE;
+DROP TABLE IF EXISTS INSTRUMENT CASCADE;
+DROP TABLE IF EXISTS CONTRAT_AGENT_ARTISTE CASCADE;
+DROP TABLE IF EXISTS PAIEMENT_ARTISTE CASCADE;
+DROP TABLE IF EXISTS ALBUMS CASCADE;
+DROP TABLE IF EXISTS STYLE_MUSIQUE CASCADE;
+DROP TABLE IF EXISTS CONTRAT_ARTISTE_PRODUCTEUR CASCADE;
+DROP TABLE IF EXISTS MUSICIEN CASCADE;
+DROP TABLE IF EXISTS PRODUCTEUR CASCADE;
+DROP TABLE IF EXISTS MAITRISE CASCADE;
+DROP TABLE IF EXISTS JOUE CASCADE;
 
 CREATE TABLE IF NOT EXISTS MUSICIEN (
     musicien_id INTEGER NOT NULL,
@@ -22,6 +38,9 @@ CREATE TABLE IF NOT EXISTS MUSICIEN (
     PRIMARY KEY (musicien_id),
     UNIQUE (musicien_nom, musicien_prenom, musicien_date_naissance, musicien_telephone, musicien_adresse, musicien_mail)
 );
+
+CREATE SEQUENCE musicien_id_seq OWNED BY musicien.musicien_id;
+ALTER TABLE musicien ALTER COLUMN musicien_id SET DEFAULT nextval('musicien_id_seq');
 
 
 CREATE TABLE IF NOT EXISTS AGENT (
@@ -37,6 +56,9 @@ CREATE TABLE IF NOT EXISTS AGENT (
    
 );
 
+CREATE SEQUENCE agent_id_seq OWNED BY agent.agent_id;
+ALTER TABLE agent ALTER COLUMN agent_id SET DEFAULT nextval('agent_id_seq');
+
 CREATE TABLE IF NOT EXISTS PRODUCTEUR (
     producteur_id INTEGER NOT NULL,
     producteur_nom VARCHAR NOT NULL,
@@ -50,6 +72,10 @@ CREATE TABLE IF NOT EXISTS PRODUCTEUR (
     UNIQUE (producteur_nom, producteur_prenom, producteur_date_naissance, producteur_telephone, producteur_adresse, producteur_mail)
 );
 
+-- Convertir le champ id de la table en auto-increment (incrémentation automatique)
+CREATE SEQUENCE producteur_id_seq OWNED BY producteur.producteur_id;
+ALTER TABLE producteur ALTER COLUMN producteur_id SET DEFAULT nextval('producteur_id_seq');
+
 CREATE TABLE IF NOT EXISTS INSTRUMENT (
     instrument_id INTEGER NOT NULL,
     instrument_nom VARCHAR NOT NULL,
@@ -57,12 +83,20 @@ CREATE TABLE IF NOT EXISTS INSTRUMENT (
     PRIMARY KEY (instrument_id)
 );
 
+-- Convertir le champ id de la table en auto-increment (incrémentation automatique)
+CREATE SEQUENCE instrument_id_seq OWNED BY instrument.instrument_id;
+ALTER TABLE instrument ALTER COLUMN instrument_id SET DEFAULT nextval('instrument_id_seq');
+
 CREATE TABLE IF NOT EXISTS STYLE_MUSIQUE(
     style_id INTEGER NOT NULL,
     style_nom VARCHAR NOT NULL,
     
     PRIMARY KEY (style_id)
 );
+
+-- Convertir le champ id de la table en auto-increment (incrémentation automatique)
+CREATE SEQUENCE style_id_seq OWNED BY style_musique.style_id;
+ALTER TABLE style_musique ALTER COLUMN style_id SET DEFAULT nextval('style_id_seq');
 
 CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
     contrat_id INTEGER NOT NULL,
@@ -75,6 +109,9 @@ CREATE TABLE IF NOT EXISTS CONTRAT_ARTISTE_PRODUCTEUR (
     PRIMARY KEY (contrat_id)
 );
 
+-- Convertir le champ id de la table en auto-increment (incrémentation automatique)
+CREATE SEQUENCE contrat_id_artiste_producteur_seq OWNED BY contrat_artiste_producteur.contrat_id;
+ALTER TABLE contrat_artiste_producteur ALTER COLUMN contrat_id SET DEFAULT nextval('contrat_id_artiste_producteur_seq');
 
 
 CREATE TABLE IF NOT EXISTS DEMANDE (
@@ -88,6 +125,10 @@ CREATE TABLE IF NOT EXISTS DEMANDE (
     PRIMARY KEY (demande_id)
 );
 
+-- Convertir le champ id de la table en auto-increment (incrémentation automatique)
+CREATE SEQUENCE demande_id_seq OWNED BY demande.demande_id;
+ALTER TABLE demande ALTER COLUMN demande_id SET DEFAULT nextval('demande_id_seq');
+
 
 CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
     contrat_id INTEGER NOT NULL,
@@ -99,6 +140,10 @@ CREATE TABLE IF NOT EXISTS CONTRAT_AGENT_ARTISTE (
     
     PRIMARY KEY (contrat_id)
 );
+
+-- Convertir le champ id de la table en auto-increment (incrémentation automatique)
+CREATE SEQUENCE contrat_id_agent_artiste_seq OWNED BY contrat_agent_artiste.contrat_id;
+ALTER TABLE contrat_agent_artiste ALTER COLUMN contrat_id SET DEFAULT nextval('contrat_id_agent_artiste_seq');
 
 
 /* PAIEMENT_ARTISTE : Comptabilité
@@ -125,6 +170,10 @@ CREATE TABLE IF NOT EXISTS ALBUMS (
     
     PRIMARY KEY (album_id)
 );
+
+-- Convertir le champ id de la table en auto-increment (incrémentation automatique)
+CREATE SEQUENCE album_id_seq OWNED BY albums.album_id;
+ALTER TABLE albums ALTER COLUMN album_id SET DEFAULT nextval('album_id_seq');
 
 
 CREATE TABLE IF NOT EXISTS JOUE (
