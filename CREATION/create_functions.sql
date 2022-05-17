@@ -191,6 +191,39 @@ $$ LANGUAGE plpgsql;
 ---------------------------------------- STYLE_MUSIQUE ---------------------------------------------------------
 
 ---------------------------------------- CONTRAT_ARTISTE_PRODUCTEUR --------------------------------------------
+CREATE OR REPLACE FUNCTION contrat_reste_a_payer(id_contrat integer) 
+RETURNS SETOF contrat_artiste_producteur AS $$
+-- La fonction retourne un type “ensemble” (SETOF)
+	DECLARE
+		paiements_anterieurs integer; -- Montant des paiements antérieurs
+		contrat_renumeration_total integer;
+		contat%ROWTYPE;
+	BEGIN
+	    SELECT contrat_renumeration INTO contrat_renumeration_total
+		FROM  contrat_artiste_producteur
+		WHERE contrat_id = id_contrat;
+			    
+		SELECT SUM(C.paiement_montant_brut) INTO paiements_anterieurs
+		FROM paiement_artiste AS C
+		WHERE C.contrat_id = NEW.contrat_id
+		GROUP BY C.contrat_id;
+		
+		IF NOT FOUND THEN -- Si pas de paiements anterieurs
+			paiements_anterieurs := 0;
+		END IF;
+		
+		IF ((NEW.paiement_montant_brut + paiements_anterieurs) <= contrat_renumeration_total) THEN
+			RAISE NOTICE 'Insertion ou mise a jour ok car (paiement montant brut + paiements anterieurs) <= (renumeration total du contrat) : % <=  % .', (NEW.paiement_montant_brut + paiements_anterieurs), contrat_renumeration_total;
+			RETURN NEW;
+		END IF;
+		
+		RAISE 'Insertion ou mise a jour impossible car (paiement montant brut + paiements anterieurs) > (renumeration total du contrat) : % >  % .', (NEW.paiement_montant_brut + paiements_anterieurs), paiements_anterieurs USING ERRCODE='20005';
+		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
+	END;
+$$ LANGUAGE plpgsql;
+
+
+-- Contrats avec reste à payer
 
 ---------------------------------------- DEMANDE ---------------------------------------------------------------
 
