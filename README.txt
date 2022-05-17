@@ -132,6 +132,29 @@ systeme_exploitation text : Cette fonction ne peut accepter que une les valeurs 
 
 Valeur de retour : void
 
+---------------------------------------- TABLE AGENT ---------------------------------------------------------
+----- agent_existe(nom text, prenom text, telephone text, date_embauche DATE) -> INTEGER
+Description : Une fonction qui reçoit comme paramètres nom, prenom, téléphone, etc. et vérifie si un tel agent existe.
+
+Parametres :
+nom text : la nom de l'agent.
+prenom text : le prenom de l'agent.
+telephone text : le telephone de l'agent (format : '123-456-1234')
+date_embauche DATE : la date d'embauche de l'agent
+
+Valeur de retour : le numero d'id de l'agent si il existe ou -1 en cas d’erreur (l'agent existe PAS).
+
+----- ajout_agent(nom text, prenom text, telephone text, date_embauche DATE) -> BOOLEAN
+Description : Une fonction qui reçoit comme paramètres : nom, prenom, téléphone, etc. et ajoute un nouveau agent s'il n'existe pas deja.
+ 
+Parametres :
+nom text : la nom de l'agent.
+prenom text : le prenom de l'agent.
+telephone text : le telephone de l'agent (format : '123-456-1234')
+date_embauche DATE : la date d'embauche de l'agent
+
+Valeur de retour : true si l'agent est ajouté avec succès, false si l'agent existe déjà.
+
 -----
 [1] Permission Denied error when using PostgreSQL's COPY FROM/TO command : https://www.neilwithdata.com/copy-permission-denied
 [2] PostgreSQL Documentation
