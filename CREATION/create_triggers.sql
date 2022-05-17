@@ -73,7 +73,7 @@ CREATE OR REPLACE FUNCTION verification_montant_brut() RETURNS trigger AS $$
 			RETURN NEW;
 		END IF;
 		
-		RAISE 'Insertion ou mise a jour impossible car (paiement montant brut + paiements anterieurs) > (renumeration total du contrat) : % >  % .', (NEW.paiement_montant_brut + paiements_anterieurs), paiements_anterieurs USING ERRCODE='20005';
+		RAISE 'Insertion ou mise a jour impossible car (paiement montant brut + paiements anterieurs) > (renumeration total du contrat) : % >  % .', (NEW.paiement_montant_brut + paiements_anterieurs), contrat_renumeration_total USING ERRCODE='20005';
 		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
 	END;
 $$ LANGUAGE plpgsql;
