@@ -16,4 +16,3 @@ COPY albums FROM 'C:\Users\Public\Csv files\table album.csv' CSV HEADER; --30
 COPY joue FROM 'C:\Users\Public\Csv files\table joue.csv' CSV HEADER;--1000 rows (matching the musicians)
 COPY maitrise FROM 'C:\Users\Public\Csv files\table maitrise.csv' CSV HEADER; --1000 rows (matching the musicians)
 
--- COPY contrat_artiste_producteur TO 'C:\Users\Public\Csv files\table contrat_artiste_producteur.csv'  WITH DELIMITER ',' CSV HEADER;

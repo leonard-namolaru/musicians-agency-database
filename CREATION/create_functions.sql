@@ -311,3 +311,39 @@ RETURNS SETOF demande AS $$
 		                               AND demande_date_fin >= CURRENT_DATE;
 	END;
 $$ LANGUAGE plpgsql;
+
+---------------------------------------- CONTRAT_AGENT_ARTISTE --------------------------------------------
+
+/**
+  * Signature   : exportation_contrats_en_vigueur(systeme_exploitation text) -> void
+  * Description : Exportation de tous les contrats actuellement en vigueur. 
+  *               La destination pour l'exportation sur Windows : C:\Users\Public\contrats_en_vigueur.csv 
+  * 	          La destination pour l'exportation sur Linux ou Mac : /tmp/contrats_en_vigueur.csv
+  *
+  *  Parametres :
+  ** systeme_exploitation text : Cette fonction ne peut accepter que une les valeurs suivantes en tant que parametre : WINDOWS LINUX MAC.
+  *
+  * Valeur de retour : void
+  */
+CREATE OR REPLACE FUNCTION exportation_contrats_en_vigueur(systeme_exploitation text) 
+RETURNS void AS $$
+	BEGIN
+		
+		IF systeme_exploitation = 'WINDOWS' THEN
+			
+			COPY (SELECT * FROM contrat_agent_artiste WHERE ( (contrat_debut <= CURRENT_DATE AND contrat_fin = NULL) 
+			OR (contrat_debut <= CURRENT_DATE AND contrat_fin >= CURRENT_DATE) )) TO 'C:\Users\Public\contrats_en_vigueur.csv'  WITH DELIMITER ',' CSV HEADER;
+			
+			RAISE NOTICE 'La destination pour l exportation : C:\Users\Public\contrats_en_vigueur.csv .'; 
+		ELSEIF systeme_exploitation = 'MAC' OR systeme_exploitation = 'LINUX' THEN
+			
+			COPY (SELECT * FROM contrat_agent_artiste WHERE ( (contrat_debut <= CURRENT_DATE AND contrat_fin = NULL) 
+			OR (contrat_debut <= CURRENT_DATE AND contrat_fin >= CURRENT_DATE) )) TO '/tmp/contrats_en_vigueur.csv'  WITH DELIMITER ',' CSV HEADER;
+			
+			RAISE NOTICE 'La destination pour l exportation : /tmp/contrats_en_vigueur.csv .'; 
+		ELSE
+			RAISE EXCEPTION 'Cette fonction ne peut accepter que une les valeurs suivantes en tant que parametre : WINDOWS LINUX MAC .' USING ERRCODE = '10008' ; 
+		END IF;
+		
+	END;
+$$ LANGUAGE plpgsql;
