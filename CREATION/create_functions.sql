@@ -1,5 +1,5 @@
 /* FonctionsPL/pgSQL qui ne sont pas utilisees pour definir les triggers 
- * Les fonctions PL/pgSQL pour les operations courantes : gestion (insertion et mise a jour), archivage.
+ * Les fonctions PL/pgSQL pour les operations courantes de gestion 
  *
  * Exemple d'utilisation :
  * \include 'C:/Users/lenny/git/bdav-agence-artistique/CREATION/create_functions.sql'
@@ -184,46 +184,40 @@ RETURNS BOOLEAN AS $$
 $$ LANGUAGE plpgsql;
 
 
----------------------------------------- PRODUCTEUR -----------------------------------------------------------
-
----------------------------------------- INSTRUMENT -----------------------------------------------------------
-
----------------------------------------- STYLE_MUSIQUE ---------------------------------------------------------
-
 ---------------------------------------- CONTRAT_ARTISTE_PRODUCTEUR --------------------------------------------
+/**
+  * Signature   : contrat_reste_a_payer(id_contrat integer) ->  integer
+  * Description : Trouver les demandes adaptées a un musicien. C'est-à-dire des demandes qui 
+  *               n'ont pas encore expiré (qui n'ont pas encore atteint leur date de fin) et 
+  *               qui incluent des instruments de musique et un style de musique qui conviennent au musicien.
+  * 
+  *  Parametres :
+  ** id_contrat integer : ID du contrat artiste producteur.
+  *
+  * Valeur de retour : La fonction retourne le reste a payer (somme de la renumeration total - paiements anterieurs)
+  */
 CREATE OR REPLACE FUNCTION contrat_reste_a_payer(id_contrat integer) 
-RETURNS SETOF contrat_artiste_producteur AS $$
--- La fonction retourne un type “ensemble” (SETOF)
+RETURNS integer AS $$
 	DECLARE
 		paiements_anterieurs integer; -- Montant des paiements antérieurs
 		contrat_renumeration_total integer;
-		contat%ROWTYPE;
 	BEGIN
 	    SELECT contrat_renumeration INTO contrat_renumeration_total
 		FROM  contrat_artiste_producteur
 		WHERE contrat_id = id_contrat;
 			    
-		SELECT SUM(C.paiement_montant_brut) INTO paiements_anterieurs
-		FROM paiement_artiste AS C
-		WHERE C.contrat_id = NEW.contrat_id
-		GROUP BY C.contrat_id;
+		SELECT SUM(paiement_montant_brut) INTO paiements_anterieurs
+		FROM paiement_artiste
+		WHERE contrat_id = id_contrat
+		GROUP BY contrat_id;
 		
 		IF NOT FOUND THEN -- Si pas de paiements anterieurs
 			paiements_anterieurs := 0;
 		END IF;
 		
-		IF ((NEW.paiement_montant_brut + paiements_anterieurs) <= contrat_renumeration_total) THEN
-			RAISE NOTICE 'Insertion ou mise a jour ok car (paiement montant brut + paiements anterieurs) <= (renumeration total du contrat) : % <=  % .', (NEW.paiement_montant_brut + paiements_anterieurs), contrat_renumeration_total;
-			RETURN NEW;
-		END IF;
-		
-		RAISE 'Insertion ou mise a jour impossible car (paiement montant brut + paiements anterieurs) > (renumeration total du contrat) : % >  % .', (NEW.paiement_montant_brut + paiements_anterieurs), paiements_anterieurs USING ERRCODE='20005';
-		RETURN NULL; -- La mise a jour / insertion déclenchante ne sera pas exécutée
+		RETURN (contrat_renumeration_total - paiements_anterieurs);
 	END;
 $$ LANGUAGE plpgsql;
-
-
--- Contrats avec reste à payer
 
 ---------------------------------------- DEMANDE ---------------------------------------------------------------
 
@@ -317,14 +311,3 @@ RETURNS SETOF demande AS $$
 		                               AND demande_date_fin >= CURRENT_DATE;
 	END;
 $$ LANGUAGE plpgsql;
-
-
----------------------------------------- CONTRAT_AGENT_ARTISTE -------------------------------------------------
-
----------------------------------------- PAIEMENT_ARTISTE ------------------------------------------------------
-
----------------------------------------- ALBUMS ----------------------------------------------------------------
-
----------------------------------------- JOUE ------------------------------------------------------------------
-
----------------------------------------- MAITRISE ------------------------------------------------------------------
