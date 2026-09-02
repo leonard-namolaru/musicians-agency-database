@@ -18,7 +18,7 @@ L’objectif du projet est la modélisation, le peuplement, et la mise en place 
 #### Principales fonctionnalités
 
 - Création d’indexes qui permettent d’optimiser les requêtes les plus fréquentes.
-- Fonctions PL/pgSQL pour les opérations courantes + tests qui permettent d’illustrer l’action de ses fonctions.
+- Fonctions PL/pgSQL pour les opérations courantes + tests qui permettent d’illustrer l’action de ces fonctions.
 - Triggers + tests qui permettent d’illustrer les déclenchement de chaque trigger.
 
 #### Les données
