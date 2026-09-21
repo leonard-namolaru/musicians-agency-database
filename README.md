@@ -70,7 +70,7 @@ _[2] PostgreSQL Documentation_
     _https://www.postgresql.org/docs/9.1/datatype-datetime.html#DATATYPE-DATETIME-OUTPUT2-TABLE_
     _https://www.postgresql.org/docs/7.2/sql-set.html_
 
-#### fonctions PL/pgSQL pour les opérations courantes de gestion
+#### Fonctions PL/pgSQL pour les opérations courantes de gestion
 Les fonctions suivantes sont à votre disposition :
 
 TABLE MUSICIEN
